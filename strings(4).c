@@ -10,12 +10,14 @@ int cmp(const void *a, const void *b) {
     return *(int*)a - *(int*)b;
 }
 
-void smartFileReading(FILE **f, char* file_name) {
+int smartFileReading(FILE **f, char* file_name) {
     *f = fopen(file_name, "r");
     if(*f == NULL) {
         perror("Bad File Name");
-        exit(7);
+        //exit(7);
+        return 0;
     }
+    return 1;
 }
 
 int max(int a, int b) {
@@ -42,10 +44,10 @@ void Smart_out_string(char * str, size_t beg, size_t end) {
 }
 
 void strings(FILE* file) {
-    size_t n_pos_capacity = 1000000, n_pos_size = 0;
+    size_t n_pos_capacity = 100000, n_pos_size = 0;
     struct good_sequense *n_pos = malloc(n_pos_capacity);
 
-    size_t str_capacity = 1000000, str_size = 0;
+    size_t str_capacity = 10000, str_size = 0;
     char* str = malloc(str_capacity);
 
     int count = 0;
@@ -85,16 +87,14 @@ int main(int argc, char** argv) {
     if(argc > 1) {
         for(int i = 1; i < argc; ++i) {
             FILE * file;
-            smartFileReading(&file, argv[i]);
-
-            strings(file);
-
-            fclose(file);
+            if(smartFileReading(&file, argv[i])){
+                strings(file);
+                fclose(file);
+            }
         }
     }
     else {
-        FILE* file = stdin;
-        strings(file);
+        strings(stdin);
     }
 
     return 0;
