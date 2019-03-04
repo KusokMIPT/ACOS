@@ -14,7 +14,7 @@ void smartFileReading(FILE **f, char* file_name) {
     *f = fopen(file_name, "r");
     if(*f == NULL) {
         perror("Bad File Name");
-        exit(7);
+        //exit(7);
     }
 }
 
@@ -40,21 +40,21 @@ void out_n_pos(int* arr, int size) {
 }
 
 void OutFileTail(FILE* file) {
-    fseek(file, 0L, SEEK_END);//переход в конец файла
-    size_t str_capacity = 1000000, str_size = 0;
+    //fseek(file, 0L, SEEK_END); //переход в конец файла
+    size_t str_capacity = 100000, str_size = 0;
     char* str = malloc(str_capacity);
-    size_t file_len = ftell(file); //For what?
+    //size_t file_len = ftell(file); //For what?
 
-    size_t n_pos_capacity = 100, n_pos_size = 1;
+    size_t n_pos_capacity = 10000, n_pos_size = 1;
     int *n_pos = malloc(n_pos_capacity);
     n_pos[0] = 0;
 
-    fseek(file, 0L, SEEK_SET);
+    //fseek(file, 0L, SEEK_SET);
 
     int i = 0;
     int c;
     while ((c = fgetc(file)) != EOF) {
-        if(i + 2 > str_capacity) {
+        if(str_size + 2 > str_capacity) {
             str_capacity*=2;
             str = realloc(str, str_capacity);
         }
@@ -70,11 +70,10 @@ void OutFileTail(FILE* file) {
         ++i;
     }
     if(str[str_size - 1] != '\n') {
-        n_pos_size = (n_pos_size + 1) % 10;
-        n_pos[n_pos_size] = str_size - 1;
+        n_pos[n_pos_size++] = str_size - 1;
     }
 
-    qsort(n_pos, n_pos_size, sizeof(int), cmp);
+    //qsort(n_pos, n_pos_size, sizeof(int), cmp);
     //out_n_pos(n_pos, n_pos_size);
     str[str_size] = '\0';
 
@@ -84,8 +83,8 @@ void OutFileTail(FILE* file) {
 }
 
 int main(int argc, char** argv) {
-    argc = 2;
-    argv[1] = "input.txt";
+    //argc = 2;
+    //argv[1] = "input.txt";
     if(argc > 1) {
         for(int i = 1; i < argc; ++i) {
             FILE * file;
@@ -97,8 +96,7 @@ int main(int argc, char** argv) {
         }
     }
     else {
-        FILE* file = stdin;
-
+        OutFileTail(stdin);
     }
 
     return 0;
